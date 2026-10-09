@@ -100,6 +100,28 @@ global_mobile: true
 global_wide: false
 ```
 
+### Dashboard-Wide Configuration
+Instead of a card, you can set the header position for a whole dashboard in the dashboard configuration itself. Add `header_position` at the top level, in the dashboard's **Raw configuration editor** (Edit dashboard → three dots → Raw configuration editor) or in the YAML file for YAML-mode dashboards.
+
+```yaml
+header_position:
+  style:
+    - mobile
+    - tablet
+  design: minimal
+views:
+  - title: Home
+```
+
+- `style` - The breakpoints, same as the card: `mobile`, `tablet`, `desktop`, `wide` and `custom`. An empty list keeps the header at the top on this dashboard.
+- `design` - `default` or `minimal`.
+- `custom_width` - Minimum width in px for `custom`.
+
+Note that these keys are lowercase. The `global_` options are not used here.
+
+A dashboard with `header_position` ignores any Header Position Card, including cards set to Dashboard and global cards on other dashboards. Dashboards without it work as before.
+
+Changes saved in the raw configuration editor apply when you close the editor. Changes made elsewhere, for example on another device or in a YAML file, apply after the next navigation or a page reload.
 
 ## ❤️ Support My Work
 

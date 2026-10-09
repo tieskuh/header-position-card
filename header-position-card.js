@@ -276,6 +276,10 @@ class HeaderPosition {
     const lovelaceConfig = panel?.lovelace?.config;
     if (!lovelaceConfig) return null;
 
+    // A header_position key decides for the whole dashboard, at every width.
+    const keyConfig = this._readDashboardKey(lovelaceConfig);
+    if (keyConfig) return keyConfig;
+
     if (!this._scanCache.has(lovelaceConfig)) {
       this._scanCache.set(
         lovelaceConfig,
@@ -287,6 +291,24 @@ class HeaderPosition {
     if (!card) return null;
 
     return this._matchBreakpoints(card).scope === "dashboard" ? card : null;
+  }
+
+  // Reads header_position from the root of the dashboard config. Its lowercase
+  // keys map to dashboard_<breakpoint> flags; global_ options are ignored.
+  _readDashboardKey(lovelaceConfig) {
+    const value = lovelaceConfig.header_position;
+    if (!value || typeof value !== "object" || Array.isArray(value)) {
+      return null;
+    }
+
+    const config = this._normalizeConfig({
+      Design: value.design,
+      custom_width: value.custom_width,
+    });
+    normalizeStyle(value.style).forEach((bp) => {
+      if (BREAKPOINTS.includes(bp)) config[`dashboard_${bp}`] = true;
+    });
+    return config;
   }
 
   _findDashboardCard(node, depth = 0) {
